@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Goods">
+    <id column="goodId" jdbcType="BIGINT" property="goodId" />
+    <result column="goodName" jdbcType="VARCHAR" property="goodName" />
+    <result column="goodNum" jdbcType="INTEGER" property="goodNum" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from goods
+    where goodId = #{goodId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hxt.project.bean.Goods">
+    insert into goods (goodId, goodName, goodNum, 
+      editTime, editUser)
+    values (#{goodId,jdbcType=BIGINT}, #{goodName,jdbcType=VARCHAR}, #{goodNum,jdbcType=INTEGER},
+      #{editTime,jdbcType=TIMESTAMP}, #{editUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Goods">
+    update goods
+    set goodName = #{goodName,jdbcType=VARCHAR},
+      goodNum = #{goodNum,jdbcType=INTEGER},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      editUser = #{editUser,jdbcType=VARCHAR}
+    where goodId = #{goodId,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select goodId, goodName, goodNum, editTime, editUser
+    from goods
+    where goodId = #{goodId,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select goodId, goodName, goodNum, editTime, editUser
+    from goods
+  </select>
+  <select id="selectByGoodsName" resultMap="BaseResultMap">
+    select goodId, goodName, goodNum, editTime, editUser
+    from goods
+    <where>
+      <if test="goodName !=null and goodName != '' ">
+        and goodName like concat('%',#{goodName},'%')
+      </if>
+    </where>
+  </select>
+</mapper>

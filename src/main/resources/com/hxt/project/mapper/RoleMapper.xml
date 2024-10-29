@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Role">
+    <id column="roleId" jdbcType="INTEGER" property="roleId" />
+    <result column="systemNo" jdbcType="VARCHAR" property="systemNo" />
+    <result column="roleNo" jdbcType="VARCHAR" property="roleNo" />
+    <result column="roleName" jdbcType="VARCHAR" property="roleName" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from role
+    where roleId = #{roleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteRolePermissions">
+    delete from role_menu
+    where roleId= #{roleId};
+  </delete>
+  <insert id="insert" parameterType="com.hxt.project.bean.Role">
+    insert into role (roleId, systemNo, roleNo, 
+      roleName, editTime, editUser
+      )
+    values (#{roleId,jdbcType=INTEGER}, #{systemNo,jdbcType=VARCHAR}, #{roleNo,jdbcType=VARCHAR},
+      #{roleName,jdbcType=VARCHAR}, #{editTime,jdbcType=TIMESTAMP}, #{editUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Role">
+    update role
+    set systemNo = #{systemNo,jdbcType=VARCHAR},
+      roleNo = #{roleNo,jdbcType=VARCHAR},
+      roleName = #{roleName,jdbcType=VARCHAR},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      editUser = #{editUser,jdbcType=VARCHAR}
+    where roleId = #{roleId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select roleId, systemNo, roleNo, roleName, editTime, editUser
+    from role
+    where roleId = #{roleId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select roleId, systemNo, roleNo, roleName, editTime, editUser
+    from role
+  </select>
+
+  <select id="getAllByRoleNameAndNo" resultType="com.hxt.project.bean.Role">
+    select roleId, systemNo, roleNo, roleName, editTime, editUser
+    from role
+    <where>
+      <if test="roleName !=null and roleName != '' ">
+        and roleName like concat('%',#{roleName},'%')
+      </if>
+      <if test="roleNo !=null and roleNo != '' ">
+        and roleNo =#{roleNo}
+      </if>
+    </where>
+  </select>
+
+
+  <!-- 保存角色权限（批量插入） -->
+  <insert id="saveRolePermissions">
+    <if test="moduleIds != null and moduleIds.size() > 0">
+      INSERT INTO role_menu (roleId, moduleId)
+      VALUES
+      <foreach collection="moduleIds" item="moduleId" separator=",">
+        (#{roleId}, #{moduleId})
+      </foreach>
+    </if>
+  </insert>
+
+  <!-- 查询角色的权限 -->
+  <select id="getRolePermissions" resultType="com.hxt.project.bean.Menu">
+    SELECT moduleId, parentId, moduleName, moduleUrl, moduleIcon, moduleOrder, isLeaf,
+           moduleLevel, systemNo, fullIndex, addUser, editUser, addTime, editTime, moduleNotes
+    FROM menu
+             WHERE moduleId in (
+             select moduleId
+             FROM role_menu
+             where roleId=#{roleId})
+  </select>
+  <select id="getRoleMenuCountByRoleId" resultType="java.lang.Integer">
+    select count(*)
+    from role_menu
+    where roleId=#{roleId}
+  </select>
+</mapper>

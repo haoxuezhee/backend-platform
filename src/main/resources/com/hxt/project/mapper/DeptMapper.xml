@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.DeptMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Dept">
+    <id column="deptId" jdbcType="INTEGER" property="deptId" />
+    <result column="deptName" jdbcType="VARCHAR" property="deptName" />
+    <result column="deptNo" jdbcType="VARCHAR" property="deptNo" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+  </resultMap>
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from dept
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertDept" parameterType="com.hxt.project.bean.Dept">
+    insert into dept (deptId, deptName, deptNo, 
+      editTime, editUser)
+    values (#{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR}, #{deptNo,jdbcType=VARCHAR},
+      #{editTime,jdbcType=TIMESTAMP}, #{editUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateById" parameterType="com.hxt.project.bean.Dept">
+    update dept
+    set deptName = #{deptName,jdbcType=VARCHAR},
+      deptNo = #{deptNo,jdbcType=VARCHAR},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      editUser = #{editUser,jdbcType=VARCHAR}
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </update>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select deptId, deptName, deptNo, editTime, editUser
+    from dept
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllDept" resultMap="BaseResultMap">
+    select deptId, deptName, deptNo, editTime, editUser
+    from dept
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dept
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hxt.project.bean.Dept">
+    insert into dept (deptId, deptName, deptNo, 
+      editTime, editUser)
+    values (#{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR}, #{deptNo,jdbcType=VARCHAR},
+      #{editTime,jdbcType=TIMESTAMP}, #{editUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Dept">
+    update dept
+    set deptName = #{deptName,jdbcType=VARCHAR},
+      deptNo = #{deptNo,jdbcType=VARCHAR},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      editUser = #{editUser,jdbcType=VARCHAR}
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select deptId, deptName, deptNo, editTime, editUser
+    from dept
+    where deptId = #{deptId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select deptId, deptName, deptNo, editTime, editUser
+    from dept
+  </select>
+  <select id="getAllByDeptNameAndDeptNo" resultType="com.hxt.project.bean.Dept">
+    select deptId, deptName, deptNo, editTime, editUser
+    from dept
+    <where>
+      <if test="deptName !=null and deptName != '' ">
+        and deptName like concat('%',#{deptName},'%')
+      </if>
+      <if test="deptNo !=null and deptNo != '' ">
+        and deptNo =#{deptNo}
+      </if>
+    </where>
+  </select>
+</mapper>

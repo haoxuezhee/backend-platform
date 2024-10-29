@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Menu">
+    <id column="moduleId" jdbcType="BIGINT" property="moduleId" />
+    <result column="parentId" jdbcType="BIGINT" property="parentId" />
+    <result column="moduleName" jdbcType="VARCHAR" property="moduleName" />
+    <result column="moduleUrl" jdbcType="VARCHAR" property="moduleUrl" />
+    <result column="moduleIcon" jdbcType="VARCHAR" property="moduleIcon" />
+    <result column="moduleOrder" jdbcType="INTEGER" property="moduleOrder" />
+    <result column="isLeaf" jdbcType="BIT" property="isLeaf" />
+    <result column="moduleLevel" jdbcType="INTEGER" property="moduleLevel" />
+    <result column="systemNo" jdbcType="VARCHAR" property="systemNo" />
+    <result column="fullIndex" jdbcType="VARCHAR" property="fullIndex" />
+    <result column="addUser" jdbcType="VARCHAR" property="addUser" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+    <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="moduleNotes" jdbcType="LONGVARCHAR" property="moduleNotes" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from menu
+    where moduleId = #{moduleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hxt.project.bean.Menu">
+    insert into menu (moduleId, parentId, moduleName, 
+      moduleUrl, moduleIcon, moduleOrder, 
+      isLeaf, moduleLevel, systemNo, 
+      fullIndex, addUser, editUser, 
+      addTime, editTime, moduleNotes
+      )
+    values (#{moduleId,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{moduleName,jdbcType=VARCHAR},
+      #{moduleUrl,jdbcType=VARCHAR}, #{moduleIcon,jdbcType=VARCHAR}, #{moduleOrder,jdbcType=INTEGER},
+      #{isLeaf,jdbcType=BIT}, #{moduleLevel,jdbcType=INTEGER}, #{systemNo,jdbcType=VARCHAR},
+      #{fullIndex,jdbcType=VARCHAR}, #{addUser,jdbcType=VARCHAR}, #{editUser,jdbcType=VARCHAR},
+      #{addTime,jdbcType=TIMESTAMP}, #{editTime,jdbcType=TIMESTAMP}, #{moduleNotes,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Menu">
+    update menu
+    set parentId = #{parentId,jdbcType=BIGINT},
+      moduleName = #{modulenName,jdbcType=VARCHAR},
+      moduleUrl = #{moduleUrl,jdbcType=VARCHAR},
+      moduleIcon = #{moduleIcon,jdbcType=VARCHAR},
+      moduleOrder = #{moduleOrder,jdbcType=INTEGER},
+      isLeaf = #{isLeaf,jdbcType=BIT},
+      moduleLevel = #{moduleLevel,jdbcType=INTEGER},
+      systemNo = #{systemNo,jdbcType=VARCHAR},
+      fullIndex = #{fullIndex,jdbcType=VARCHAR},
+      addUser = #{addUser,jdbcType=VARCHAR},
+      editUser = #{editUser,jdbcType=VARCHAR},
+      addTime = #{addTime,jdbcType=TIMESTAMP},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      moduleNotes = #{moduleNotes,jdbcType=LONGVARCHAR}
+    where moduleId = #{moduleId,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select moduleId, parentId, moduleName, moduleUrl, moduleIcon, moduleOrder, isLeaf, 
+    moduleLevel, systemNo, fullIndex, addUser, editUser, addTime, editTime, moduleNotes
+    from menu
+    where moduleId = #{moduleId,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select moduleId, parentId, moduleName, moduleUrl, moduleIcon, moduleOrder, isLeaf, 
+    moduleLevel, systemNo, fullIndex, addUser, editUser, addTime, editTime, moduleNotes
+    from menu
+  </select>
+  <select id="selectParentsMenu" resultType="com.hxt.project.bean.Menu">
+    select moduleId, parentId, moduleName, moduleUrl, moduleIcon, moduleOrder, isLeaf,
+           moduleLevel, systemNo, fullIndex, addUser, editUser, addTime, editTime, moduleNotes
+    from menu
+    where parentId = 0
+  </select>
+</mapper>

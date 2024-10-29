@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.VariableMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Variable">
+    <id column="varId" jdbcType="INTEGER" property="varId" />
+    <result column="varLable" jdbcType="VARCHAR" property="varLable" />
+    <result column="varName" jdbcType="VARCHAR" property="varName" />
+    <result column="varValue" jdbcType="VARCHAR" property="varValue" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from variable
+    where varId = #{varId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hxt.project.bean.Variable">
+    insert into variable (varId, varLable, varName, 
+      varValue, editTime, editUser
+      )
+    values (#{varId,jdbcType=INTEGER}, #{varLable,jdbcType=VARCHAR}, #{varName,jdbcType=VARCHAR},
+      #{varValue,jdbcType=VARCHAR}, #{editTime,jdbcType=TIMESTAMP}, #{editUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey">
+    update variable
+    set varLable = #{varLable,jdbcType=VARCHAR},
+      varName = #{varName,jdbcType=VARCHAR},
+      varValue = #{varValue,jdbcType=VARCHAR},
+      editTime = #{editTime,jdbcType=TIMESTAMP},
+      editUser = #{editUser,jdbcType=VARCHAR}
+    where varId = #{varId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select varId, varLable, varName, varValue, editTime, editUser
+    from variable
+    where varId = #{varId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select varId, varLable, varName, varValue, editTime, editUser
+    from variable
+  </select>
+  <select id="getAllByVarNameAndLabel" resultMap="BaseResultMap">
+    select varId, varLable, varName, varValue, editTime, editUser
+    from variable
+    <where>
+      <if test="varName !=null and varName != '' ">
+        and varName like concat('%',#{varName},'%')
+      </if>
+      <if test="varLable !=null and varLable != '' ">
+        and varLable =#{varLable}
+      </if>
+    </where>
+  </select>
+</mapper>

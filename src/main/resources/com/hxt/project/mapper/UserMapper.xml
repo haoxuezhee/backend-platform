@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.User">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="deptName" jdbcType="VARCHAR" property="deptName" />
+    <result column="login_count" jdbcType="INTEGER" property="loginCount" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hxt.project.bean.User" useGeneratedKeys="true">
+    insert into user (company, username, password, 
+      name, phone, sex, email, 
+      update_time, status,deptName)
+    values (#{company,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{email,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.User">
+    update user
+    set company = #{company,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      email = #{email,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      deptName = #{deptName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, company, username, password, name, phone, sex, email, update_time, status,deptName,login_count
+    from user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, company, username, password, name, phone, sex, email, update_time, status,deptName,login_count
+    from user
+  </select>
+    <select id="queryByUsername" resultMap="BaseResultMap">
+      select id, company, username, password, name, phone, sex, email, update_time, status,deptName,login_count
+      from user
+      where username=#{username}
+    </select>
+    <select id="queryByPhoneUsersAndUsername" resultType="com.hxt.project.bean.User">
+      select id, company, username, password, name, phone, sex, email, update_time, status,deptName,login_count
+      from user
+      <where>
+        <if test="username !=null and username != '' ">
+          and username like concat('%',#{username},'%')
+        </if>
+        <if test="phone !=null and phone != '' ">
+          and phone =#{phone}
+        </if>
+      </where>
+    </select>
+</mapper>

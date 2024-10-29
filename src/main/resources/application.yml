@@ -1,0 +1,29 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/springboot_project
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  swagger2:
+    enabled: true
+  redis:
+    port: 6379
+    host: 192.168.145.129
+    database: 5
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      static-locations: classpath:/static/, classpath:/resources/
+logging:
+  level:
+    root: info
+    com.hxt.project.mapper: debug
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg [userId=%X{userId}, username=%X{userName}]%n"
+  file:
+    name: my.log
+    path: D:\XunLeiDownLoad\planetProject\project\src\

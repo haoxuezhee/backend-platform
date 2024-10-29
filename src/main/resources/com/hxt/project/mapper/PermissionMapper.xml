@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.PermissionMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Permission">
+    <id column="permissionId" jdbcType="INTEGER" property="permissionId" />
+    <result column="permissionName" jdbcType="VARCHAR" property="permissionName" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="addUser" jdbcType="VARCHAR" property="addUser" />
+    <result column="editUser" jdbcType="VARCHAR" property="editUser" />
+    <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="editTime" jdbcType="TIMESTAMP" property="editTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from permission
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.hxt.project.bean.Permission">
+    insert into permission (permissionId, permissionName, permission, 
+      addUser, editUser, addTime, 
+      editTime)
+    values (#{permissionId,jdbcType=INTEGER}, #{permissionName,jdbcType=VARCHAR}, #{permission,jdbcType=VARCHAR}, 
+      #{addUser,jdbcType=VARCHAR}, #{editUser,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{editTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Permission">
+    update permission
+    set permissionName = #{permissionName,jdbcType=VARCHAR},
+      permission = #{permission,jdbcType=VARCHAR},
+      addUser = #{addUser,jdbcType=VARCHAR},
+      editUser = #{editUser,jdbcType=VARCHAR},
+      addTime = #{addTime,jdbcType=TIMESTAMP},
+      editTime = #{editTime,jdbcType=TIMESTAMP}
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select permissionId, permissionName, permission, addUser, editUser, addTime, editTime
+    from permission
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select permissionId, permissionName, permission, addUser, editUser, addTime, editTime
+    from permission
+  </select>
+  <select id="getAllByNameAndCode" resultMap="BaseResultMap">
+    select permissionId, permissionName, permission, addUser, editUser, addTime, editTime
+    from permission
+    <where>
+      <if test="permissionName !=null and permissionName != '' ">
+        and permissionName like concat('%',#{permissionName},'%')
+      </if>
+      <if test="permission !=null and permission != '' ">
+        and permission =#{permission}
+      </if>
+    </where>
+  </select>
+  <delete id="deletePermissionsByRoleId">
+    delete from role_permission
+           where roleId = #{roleId}
+  </delete>
+
+  <insert id="insertRolePermissions">
+    insert into role_permission (roleId, permissionId)
+    VALUES
+    <foreach collection="permissionIds" item="permissionId" separator=",">
+      (#{roleId}, #{permissionId})
+    </foreach>
+  </insert>
+</mapper>

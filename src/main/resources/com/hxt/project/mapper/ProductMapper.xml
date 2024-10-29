@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxt.project.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.hxt.project.bean.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="inventory_sum" jdbcType="INTEGER" property="inventorySum" />
+    <result column="inventory" jdbcType="INTEGER" property="inventory" />
+    <result column="inventory_remove" jdbcType="INTEGER" property="inventoryRemove" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="localtion" jdbcType="VARCHAR" property="localtion" />
+    <result column="alarm" jdbcType="TINYINT" property="alarm" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="alarm_value" jdbcType="INTEGER" property="alarmValue" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="imgUrl" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="status_code" jdbcType="TINYINT" property="statusCode" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.hxt.project.bean.Product" useGeneratedKeys="true">
+    insert into product (name, inventory_sum, inventory, 
+      inventory_remove, unit, localtion, 
+      alarm, code, alarm_value, 
+      type, img, status_code, 
+      create_user, create_time, update_user, 
+      update_time,imgUrl)
+    values (#{name,jdbcType=VARCHAR}, #{inventorySum,jdbcType=INTEGER}, #{inventory,jdbcType=INTEGER}, 
+      #{inventoryRemove,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, #{localtion,jdbcType=VARCHAR}, 
+      #{alarm,jdbcType=TINYINT}, #{code,jdbcType=VARCHAR}, #{alarmValue,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{statusCode,jdbcType=TINYINT}, 
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{imgUrl,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.hxt.project.bean.Product">
+    update product
+    set name = #{name,jdbcType=VARCHAR},
+      inventory_sum = #{inventorySum,jdbcType=INTEGER},
+      inventory = #{inventory,jdbcType=INTEGER},
+      inventory_remove = #{inventoryRemove,jdbcType=INTEGER},
+      unit = #{unit,jdbcType=VARCHAR},
+      localtion = #{localtion,jdbcType=VARCHAR},
+      alarm = #{alarm,jdbcType=TINYINT},
+      code = #{code,jdbcType=VARCHAR},
+      alarm_value = #{alarmValue,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      status_code = #{statusCode,jdbcType=TINYINT},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm, 
+    code, alarm_value, type, img, status_code, create_user, create_time, update_user, 
+    update_time,imgUrl
+    from product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm, 
+    code, alarm_value, type, img, status_code, create_user, create_time, update_user,imgUrl,
+    update_time
+    from product
+  </select>
+    <select id="selectByProductName" resultMap="BaseResultMap">
+      select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm,
+      code, alarm_value, type, img, status_code, create_user, create_time, update_user,
+      update_time,imgUrl
+      from product
+      <where>
+        <if test="name !=null and name != '' ">
+          and name like concat('%',#{name},'%')
+        </if>
+      </where>
+    </select>
+  <select id="getByName" resultMap="BaseResultMap">
+    select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm,
+           code, alarm_value, type, img, status_code, create_user, create_time, update_user,
+           update_time,imgUrl
+    from product
+    where name = #{name}
+  </select>
+
+
+    <update id="outBound">
+    update product
+    set inventory = inventory - #{inventoryRemove},
+        inventory_remove = inventory_remove + #{inventoryRemove}
+    where name = #{name}
+  </update>
+  <update id="inBound">
+    update product
+    set inventory = inventory + #{inventorySum},
+        inventory_sum = inventory_sum + #{inventorySum}
+    where name = #{name}
+  </update>
+  <update id="updateProductImgUrl">
+    update product
+    set imgUrl = #{imgUrl}
+    where id = #{id}
+  </update>
+  <insert id="insertProductsBatch">
+    insert into product (name, inventory_sum, inventory,
+    inventory_remove, unit, localtion,
+    alarm, code, alarm_value,
+    type, img, status_code,
+    create_user, create_time, update_user,
+    update_time,imgUrl)
+    values
+    <foreach collection="products" item="product" separator=",">
+      (#{product.name,jdbcType=VARCHAR},
+       #{product.inventorySum,jdbcType=INTEGER}, #{product.inventory,jdbcType=INTEGER},
+      #{product.inventoryRemove,jdbcType=INTEGER}, #{product.unit,jdbcType=VARCHAR},
+       #{product.localtion,jdbcType=VARCHAR},
+      #{product.alarm,jdbcType=TINYINT}, #{product.code,jdbcType=VARCHAR}, #{product.alarmValue,jdbcType=INTEGER},
+      #{product.type,jdbcType=VARCHAR}, #{product.img,jdbcType=VARCHAR}, #{product.statusCode,jdbcType=TINYINT},
+      #{product.createUser,jdbcType=VARCHAR}, #{product.createTime,jdbcType=TIMESTAMP}, #{product.updateUser,jdbcType=VARCHAR},
+      #{product.updateTime,jdbcType=TIMESTAMP},#{product.imgUrl,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="findByCode" resultMap="BaseResultMap">
+    select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm,
+           code, alarm_value, type, img, status_code, create_user, create_time, update_user,
+           update_time,imgUrl
+    from product
+    where code = #{code}
+  </select>
+    <select id="getTopFiveOutBound" resultMap="BaseResultMap">
+      select id, name, inventory_sum, inventory, inventory_remove, unit, localtion, alarm,
+             code, alarm_value, type, img, status_code, create_user, create_time, update_user,
+             update_time,imgUrl
+      from product
+      order by inventory_remove desc
+      limit 5
+    </select>
+</mapper>
